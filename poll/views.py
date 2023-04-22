@@ -53,6 +53,8 @@ def create(request, pk):
         if(hfromSignature == h):
             new_vote = models.Vote(vote=pk)
             new_vote.block_id = block_id
+            voter.has_voted = True
+            voter.save()
             new_vote.save()
             status = 'Ballot signed successfully'
             error = False
@@ -69,14 +71,13 @@ def create(request, pk):
         if not error:
             return render(request, 'poll/status.html', context)
 
-    return render(request, 'poll/failure.html', context)
+    return render(request, 'poll/failure.html')
 
 prev_hash = '0' * 64
 
 def seal(request):
 
     if request.method == 'POST':
-
         if (len(models.Vote.objects.all()) % 5 != 0):
             redirect("login")
         else:
