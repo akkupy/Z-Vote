@@ -15,11 +15,17 @@ class Candidate(models.Model):
     criminalRecords = models.BooleanField(default=False)
     count = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
 class Voter(models.Model):
     username = models.CharField(max_length=30)
     public_key_n = models.CharField(max_length=320)
     public_key_e = models.IntegerField(default=0)
     has_voted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.username
 
 class Vote(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4)
