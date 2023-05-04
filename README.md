@@ -14,7 +14,7 @@ It converts ballots into transactions and securely mines blocks out of them. The
 ## To run the project:
 1. Clone the repository
 2. cd into the folder and run pip install django
-3. python3 manage.py runserver.
+3. python3 manage.py runserver..
 
 ## Screenshots:
 <img width="960" alt="vote_verification" src="https://user-images.githubusercontent.com/54449305/80915076-5679dc80-8d6d-11ea-9650-3fe960bd9896.png">
