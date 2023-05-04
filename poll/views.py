@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from . import models
 import math
+import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
 import time, datetime
@@ -8,11 +9,53 @@ from hashlib import sha512, sha256
 from .merkleTree import merkleTree
 import uuid
 from django.conf import settings
+from .keyGenerator import keyGen
 
 resultCalculated = False
 
+def otp_gen():
+    randomNumber = random.randint(10000,99999)
+    return randomNumber
+
+
 def home(request):
     return render(request, 'poll/home.html')
+
+def otp(request):
+    if request.method == "POST":
+        otp =request.POST.get('otp')
+        username = request.POST.get('username')
+        Voter = models.VoterList.objects.filter(username=username)[0]
+        if int(otp) == int(Voter.otp):
+            d,n,e = keyGen()
+            context = {
+                'username' : username
+            }
+            #return render(request,'registration/genkeypair.html/',context)
+
+    return redirect('register')
+
+
+def register(request):
+    if request.method=='POST':
+        username = request.POST.get('username')
+        validVoter = models.VoterList.objects.filter(username=username).exists()
+        Registered = models.Voter.objects.filter(username=username).exists()
+        if validVoter and not Registered:
+            voter = models.VoterList.objects.filter(username=username)[0]
+            otp_number = otp_gen()
+            voter.otp = otp_number
+            voter.save()
+            context = {
+                'username' : username,
+                'country_code' : voter.ph_country_code,
+                'starred' : "*******"+str(voter.phone_number)[-3:]
+            }
+            return render(request,'registration/otp.html/',context)
+
+        else:
+            print('ood')
+    return render(request,'registration/register.html/')
 
 def vote(request):
     candidates = models.Candidate.objects.all()

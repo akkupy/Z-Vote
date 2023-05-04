@@ -17,7 +17,16 @@ class Candidate(models.Model):
 
     def __str__(self):
         return self.name
+    
+class VoterList(models.Model):
+    username = models.CharField(max_length=30)
+    ph_country_code = models.CharField(max_length=10)
+    phone_number = models.CharField(max_length=20)
+    otp = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.username
+    
 class Voter(models.Model):
     username = models.CharField(max_length=30)
     public_key_n = models.CharField(max_length=320)
