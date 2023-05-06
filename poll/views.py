@@ -62,6 +62,7 @@ def register(request):
             otp_number = otp_gen()
             voter.otp = otp_number
             voter.save()
+            sms(voter.ph_country_code+voter.phone_number,"Your OTP is " + str(otp_number))
             context = {
                 'username' : username,
                 'country_code' : voter.ph_country_code,
