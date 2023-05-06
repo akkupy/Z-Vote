@@ -41,11 +41,12 @@ def otp(request):
 
                     voterpvt = models.VoterPvt(username=username)
                     voterpvt.private_key_d,voterpvt.private_key_n,voterpvt.salt = encrypt(phrase,str(d),str(n))
+                    print(phrase)
 
                     user.save()
                     voter.save()
                     voterpvt.save()
-                    
+
                     return render(request,'poll/success.html/')
 
     return redirect('register')
@@ -87,7 +88,6 @@ def login(request):
     return render(request, 'poll/login.html/')
 
 def create(request, pk):
-    print(request.user)
     voter = models.Voter.objects.filter(username=request.user.username)[0]
     if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
         vote = pk
@@ -97,7 +97,13 @@ def create(request, pk):
         else:
             block_id = 1
 
-        priv_key = {'n': int(request.POST.get('privateKey_n')), 'd':int(request.POST.get('privateKey_d'))}
+        phrase = request.POST.get('phrase')
+        username = request.user.username
+        
+        voterpvt = models.VoterPvt.objects.filter(username=username).values()
+        privateKey_d,privateKey_n=decrypt(phrase,voterpvt[0]['private_key_d'],voterpvt[0]['private_key_n'],voterpvt[0]['salt'])
+
+        priv_key = {'n': int(privateKey_n), 'd':int(privateKey_d)}
         pub_key = {'n':int(voter.public_key_n), 'e':int(voter.public_key_e)}
         # Create ballot as string vector
         timestamp = datetime.datetime.now().timestamp()

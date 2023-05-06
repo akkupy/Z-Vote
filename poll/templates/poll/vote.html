@@ -17,8 +17,7 @@
                 </h5>
                 <form action="{% url 'create' pk=candidate.candidateID %}" method="POST" class="form-group">
                     {% csrf_token %}
-                    <input type="text" name="privateKey_n" class="form-control my-3" placeholder="Private_Key 'n'" style="text-align: center;" required>
-                    <input type="text" name="privateKey_d" class="form-control my-3" placeholder="Private_Key 'd'" style="text-align: center;" required>
+                    <input type="text" name="phrase" class="form-control my-3" placeholder="Enter the PassPhrase" style="text-align: center;" required>
                     <input type="submit" value="Vote" class="btn btn-primary my-4">
                 </form>
             </div>
