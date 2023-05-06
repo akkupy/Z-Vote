@@ -19,7 +19,7 @@ class Candidate(models.Model):
         return self.name
     
 class VoterList(models.Model):
-    username = models.CharField(max_length=30)
+    username = models.CharField(max_length=30,primary_key=True)
     ph_country_code = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=20)
     otp = models.IntegerField(default=0)
@@ -28,10 +28,19 @@ class VoterList(models.Model):
         return self.username
     
 class Voter(models.Model):
-    username = models.CharField(max_length=30)
+    username = models.CharField(max_length=30,primary_key=True)
     public_key_n = models.CharField(max_length=320)
     public_key_e = models.IntegerField(default=0)
     has_voted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.username
+    
+class VoterPvt(models.Model):
+    username = models.CharField(max_length=30,primary_key=True)
+    salt = models.CharField(max_length=100)
+    private_key_n = models.CharField(max_length=320)
+    private_key_d = models.CharField(max_length=320)
 
     def __str__(self):
         return self.username

@@ -4,18 +4,17 @@ import math
 import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
+from django.contrib.auth.models import User
 import time, datetime
 from hashlib import sha512, sha256
 from .merkleTree import merkleTree
 import uuid
 from django.conf import settings
-from .keyGenerator import keyGen
+from .xtra import *
 
 resultCalculated = False
 
-def otp_gen():
-    randomNumber = random.randint(10000,99999)
-    return randomNumber
+
 
 
 def home(request):
@@ -25,13 +24,29 @@ def otp(request):
     if request.method == "POST":
         otp =request.POST.get('otp')
         username = request.POST.get('username')
+        password = request.POST.get('password')
+        password1 = request.POST.get('password1')
         Voter = models.VoterList.objects.filter(username=username)[0]
         if int(otp) == int(Voter.otp):
-            d,n,e = keyGen()
-            context = {
-                'username' : username
-            }
-            #return render(request,'registration/genkeypair.html/',context)
+            if password == password1:
+                if not models.Voter.objects.filter(username=username).exists():
+                    d,n,e = keyGen()
+                    phrase = passPhrase()
+                    user = User.objects.create_user(username=username,password=password)
+
+                    voter = models.Voter(username=username)
+                    voter.public_key_n = n
+                    voter.public_key_e = e
+                    voter.has_voted = False
+
+                    voterpvt = models.VoterPvt(username=username)
+                    voterpvt.private_key_d,voterpvt.private_key_n,voterpvt.salt = encrypt(phrase,str(d),str(n))
+
+                    user.save()
+                    voter.save()
+                    voterpvt.save()
+                    
+                    return render(request,'poll/success.html/')
 
     return redirect('register')
 
