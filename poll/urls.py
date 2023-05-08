@@ -10,5 +10,5 @@ urlpatterns = [
     path('verify', views.verify, name='verify'),
     path('results', views.result, name='result'),
     path('register',views.register,name='register'),
-    path('otp',views.otp,name='otp')
+    path('otp',views.otp,name='otp'),
 ]

@@ -14,9 +14,6 @@ from .xtra import *
 
 resultCalculated = False
 
-
-
-
 def home(request):
     return render(request, 'poll/home.html')
 
@@ -41,13 +38,17 @@ def otp(request):
 
                     voterpvt = models.VoterPvt(username=username)
                     voterpvt.private_key_d,voterpvt.private_key_n,voterpvt.salt = encrypt(phrase,str(d),str(n))
-                    print(phrase)
+
+                    sms(Voter.ph_country_code+Voter.phone_number," DO NOT SHARE THIS PASSPHRASE WITH ANYONE! \n\nYour Secret Passphrase is " + phrase)
 
                     user.save()
                     voter.save()
                     voterpvt.save()
+                    context = {
+                        'code' : phrase,
+                    }
 
-                    return render(request,'poll/success.html/')
+                    return render(request,'poll/success.html/',context)
 
     return redirect('register')
 

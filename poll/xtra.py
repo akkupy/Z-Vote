@@ -91,5 +91,3 @@ def sms(tonum,data):
                        to=tonum,
                        body=data)
     
-
-
