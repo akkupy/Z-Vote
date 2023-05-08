@@ -1,0 +1,38 @@
+{% extends 'poll/base.html' %}
+{% block content %}
+<script>
+    function copyMyText() {
+         //select the element with the id "copyMe", must be a text box
+         var textToCopy = document.getElementById("copyMe");
+         //select the text in the text box
+         textToCopy.select();
+         //copy the text to the clipboard
+         document.execCommand("copy");
+         alert("The Passphrase is Copied!");
+    }
+</script>
+    <div class="alert alert-success text-center">
+        <h3 class="alert-heading">Registration Successful!</h3>
+    </div><br><br>
+    <div class="alert alert-dark text-center" id = "containerIntro">
+        <h5 class="alert-heading" style="display: inline;vertical-align: top;font-family: 'Open Sans', sans-serif;font-size: 16px;line-height: 28px;">YOUR SECRET PASSPHRASE IS : </h5>
+        <input type="text" value="{{ code }}" id="copyMe"  style="display: inline;vertical-align: top;font-family: 'Open Sans', sans-serif;font-size: 16px;line-height: 28px;" readonly>
+        <button onclick="copyMyText()" class="btn btn-primary">Copy Phrase</button><br>
+    </div>
+    <br><br>
+    <div class="alert alert-primary text-center" role="alert">
+        <h4 class="alert-heading">IMPORTANT NOTICE</h4>
+        <p>Please save this passphrase in a secret location.</p>
+        <p>The passphrase is also messaged to your registered phone number.</p>
+        <hr>
+        <p class="mb-0"></p>NOTE: PASSPHRASE IS NOT RECOVERABLE.</p>
+        <p>You are required to use this passphrase for voting pupose.</p>
+    </div>
+    <div class="text-center">
+        <button onclick="location.href='/'" type="button" class="btn btn-primary">Go to Home</button><br>
+    </div>
+
+
+
+
+{% endblock content %}

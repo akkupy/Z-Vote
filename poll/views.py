@@ -1,18 +1,79 @@
 from django.shortcuts import render,redirect
 from . import models
 import math
+import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
+from django.contrib.auth.models import User
 import time, datetime
 from hashlib import sha512, sha256
 from .merkleTree import merkleTree
 import uuid
 from django.conf import settings
+from .xtra import *
 
 resultCalculated = False
 
 def home(request):
     return render(request, 'poll/home.html')
+
+def otp(request):
+    if request.method == "POST":
+        otp =request.POST.get('otp')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password1 = request.POST.get('password1')
+        Voter = models.VoterList.objects.filter(username=username)[0]
+        if int(otp) == int(Voter.otp):
+            if password == password1:
+                if not models.Voter.objects.filter(username=username).exists():
+                    d,n,e = keyGen()
+                    phrase = passPhrase()
+                    user = User.objects.create_user(username=username,password=password)
+
+                    voter = models.Voter(username=username)
+                    voter.public_key_n = n
+                    voter.public_key_e = e
+                    voter.has_voted = False
+
+                    voterpvt = models.VoterPvt(username=username)
+                    voterpvt.private_key_d,voterpvt.private_key_n,voterpvt.salt = encrypt(phrase,str(d),str(n))
+
+                    sms(Voter.ph_country_code+Voter.phone_number," DO NOT SHARE THIS PASSPHRASE WITH ANYONE! \n\nYour Secret Passphrase is " + phrase)
+
+                    user.save()
+                    voter.save()
+                    voterpvt.save()
+                    context = {
+                        'code' : phrase,
+                    }
+
+                    return render(request,'poll/success.html/',context)
+
+    return redirect('register')
+
+
+def register(request):
+    if request.method=='POST':
+        username = request.POST.get('username')
+        validVoter = models.VoterList.objects.filter(username=username).exists()
+        Registered = models.Voter.objects.filter(username=username).exists()
+        if validVoter and not Registered:
+            voter = models.VoterList.objects.filter(username=username)[0]
+            otp_number = otp_gen()
+            voter.otp = otp_number
+            voter.save()
+            sms(voter.ph_country_code+voter.phone_number,"Your OTP is " + str(otp_number))
+            context = {
+                'username' : username,
+                'country_code' : voter.ph_country_code,
+                'starred' : "*******"+str(voter.phone_number)[-3:]
+            }
+            return render(request,'registration/otp.html/',context)
+
+        else:
+            print('ood')
+    return render(request,'registration/register.html/')
 
 def vote(request):
     candidates = models.Candidate.objects.all()
@@ -29,7 +90,6 @@ def login(request):
     return render(request, 'poll/login.html/')
 
 def create(request, pk):
-    print(request.user)
     voter = models.Voter.objects.filter(username=request.user.username)[0]
     if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
         vote = pk
@@ -39,7 +99,13 @@ def create(request, pk):
         else:
             block_id = 1
 
-        priv_key = {'n': int(request.POST.get('privateKey_n')), 'd':int(request.POST.get('privateKey_d'))}
+        phrase = request.POST.get('phrase')
+        username = request.user.username
+        
+        voterpvt = models.VoterPvt.objects.filter(username=username).values()
+        privateKey_d,privateKey_n=decrypt(phrase,voterpvt[0]['private_key_d'],voterpvt[0]['private_key_n'],voterpvt[0]['salt'])
+
+        priv_key = {'n': int(privateKey_n), 'd':int(privateKey_d)}
         pub_key = {'n':int(voter.public_key_n), 'e':int(voter.public_key_e)}
         # Create ballot as string vector
         timestamp = datetime.datetime.now().timestamp()

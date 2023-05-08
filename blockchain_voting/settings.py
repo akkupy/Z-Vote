@@ -25,7 +25,7 @@ SECRET_KEY = '+qcjb$b6+60^(#zstf69mb%-y8b+90_^s@r0%@a63^@#^fh&mt'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','vote.akku']
 
 
 # Application definition

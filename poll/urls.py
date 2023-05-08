@@ -9,4 +9,6 @@ urlpatterns = [
     path('seal', views.seal, name='seal'),
     path('verify', views.verify, name='verify'),
     path('results', views.result, name='result'),
+    path('register',views.register,name='register'),
+    path('otp',views.otp,name='otp'),
 ]
