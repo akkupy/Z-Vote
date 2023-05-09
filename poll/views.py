@@ -4,7 +4,7 @@ import math
 import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
 import time, datetime
 from hashlib import sha512, sha256
@@ -59,7 +59,6 @@ def otp(request):
         else:
             fail = 'OTP is Invalid'
         return render(request,'failure.html',{'fail':fail})
-
     return redirect('home')
 
 
@@ -169,6 +168,7 @@ def seal(request):
 
     if request.method == 'POST':
         if (len(models.Vote.objects.all()) % 5 != 0):
+            logout(request)
             redirect("login")
         else:
             global prev_hash
@@ -195,7 +195,7 @@ def seal(request):
             prev_hash = self_hash
             block.save()
             print('Block {} has been mined'.format(block_id))
-
+    logout(request)
     return redirect("home")
 
 def retDate(v):
