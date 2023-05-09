@@ -4,6 +4,7 @@ import math
 import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
+from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 import time, datetime
 from hashlib import sha512, sha256
@@ -11,6 +12,7 @@ from .merkleTree import merkleTree
 import uuid
 from django.conf import settings
 from .xtra import *
+from django.urls import reverse
 
 resultCalculated = False
 
@@ -24,6 +26,7 @@ def otp(request):
         password = request.POST.get('password')
         password1 = request.POST.get('password1')
         Voter = models.VoterList.objects.filter(username=username)[0]
+        fail = ''
         if int(otp) == int(Voter.otp):
             if password == password1:
                 if not models.Voter.objects.filter(username=username).exists():
@@ -49,8 +52,15 @@ def otp(request):
                     }
 
                     return render(request,'poll/success.html/',context)
+                else:
+                    fail = 'Voter Already Exists'
+            else:
+                fail = 'Password MisMatch!'
+        else:
+            fail = 'OTP is Invalid'
+        return render(request,'failure.html',{'fail':fail})
 
-    return redirect('register')
+    return redirect('home')
 
 
 def register(request):
@@ -58,21 +68,24 @@ def register(request):
         username = request.POST.get('username')
         validVoter = models.VoterList.objects.filter(username=username).exists()
         Registered = models.Voter.objects.filter(username=username).exists()
-        if validVoter and not Registered:
-            voter = models.VoterList.objects.filter(username=username)[0]
-            otp_number = otp_gen()
-            voter.otp = otp_number
-            voter.save()
-            sms(voter.ph_country_code+voter.phone_number,"Your OTP is " + str(otp_number))
-            context = {
-                'username' : username,
-                'country_code' : voter.ph_country_code,
-                'starred' : "*******"+str(voter.phone_number)[-3:]
-            }
-            return render(request,'registration/otp.html/',context)
+        if validVoter:
+            if not Registered:
+                voter = models.VoterList.objects.filter(username=username)[0]
+                otp_number = otp_gen()
+                voter.otp = otp_number
+                voter.save()
+                sms(voter.ph_country_code+voter.phone_number,"Your OTP is " + str(otp_number))
+                context = {
+                    'username' : username,
+                    'country_code' : voter.ph_country_code,
+                    'starred' : "*******"+str(voter.phone_number)[-3:]
+                }
+                return render(request,'registration/otp.html/',context)
+            return render(request,'poll/failure.html',{'fail' : 'Voter is Already Registered!'})
+        
 
         else:
-            print('ood')
+            return render(request,'poll/failure.html',{'fail' : 'Invalid Voter!'})
     return render(request,'registration/register.html/')
 
 def vote(request):
@@ -80,14 +93,21 @@ def vote(request):
     context = {'candidates': candidates}
     return render(request, 'poll/vote.html', context)
 
-def login(request):
+def signin(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            return redirect('vote')
-    else:  
+        form = AuthenticationForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username,password=password)
+        if user:
+            if user.is_active:
+                login(request,user)
+                return redirect(reverse('vote'))
+        else:
+            return render(request,'poll/failure.html',{'fail':'Invalid Credentials! Try Logging In Again.'})  
+    else:
         form = AuthenticationForm()
-    return render(request, 'poll/login.html/')
+    return render(request,'registration/login.html',{'form':form})
 
 def create(request, pk):
     voter = models.Voter.objects.filter(username=request.user.username)[0]
@@ -103,7 +123,11 @@ def create(request, pk):
         username = request.user.username
         
         voterpvt = models.VoterPvt.objects.filter(username=username).values()
-        privateKey_d,privateKey_n=decrypt(phrase,voterpvt[0]['private_key_d'],voterpvt[0]['private_key_n'],voterpvt[0]['salt'])
+
+        try:
+            privateKey_d,privateKey_n=decrypt(phrase,voterpvt[0]['private_key_d'],voterpvt[0]['private_key_n'],voterpvt[0]['salt'])
+        except:
+            return render(request,'poll/failure.html',{'fail':'Invalid Passphrase Please Login And Vote Again.'})   
 
         priv_key = {'n': int(privateKey_n), 'd':int(privateKey_d)}
         pub_key = {'n':int(voter.public_key_n), 'e':int(voter.public_key_e)}
@@ -137,7 +161,7 @@ def create(request, pk):
         if not error:
             return render(request, 'poll/status.html', context)
 
-    return render(request, 'poll/failure.html')
+    return render(request, 'poll/failure.html',{'fail':'It appears you have already voted!'})
 
 prev_hash = '0' * 64
 

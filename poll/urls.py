@@ -11,4 +11,5 @@ urlpatterns = [
     path('results', views.result, name='result'),
     path('register',views.register,name='register'),
     path('otp',views.otp,name='otp'),
+    path('login',views.signin,name='login'),
 ]
