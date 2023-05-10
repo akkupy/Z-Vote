@@ -1,16 +1,13 @@
 from django.shortcuts import render,redirect
 from . import models
 import math
-import random
 from datetime import datetime
 from django.contrib.admin.forms import AuthenticationForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
-import time, datetime
+import datetime
 from hashlib import sha512, sha256
 from .merkleTree import merkleTree
-import uuid
-from django.conf import settings
 from .xtra import *
 from django.urls import reverse
 
