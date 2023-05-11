@@ -130,7 +130,7 @@ def create(request, pk):
         # Create ballot as string vector
         timestamp = datetime.datetime.now().timestamp()
         ballot = "{}|{}".format(vote, timestamp)
-        print('\ncasted ballot: {}\n'.format(ballot))
+        #print('\ncasted ballot: {}\n'.format(ballot))
         h = int.from_bytes(sha512(ballot.encode()).digest(), byteorder='big')
         signature = pow(h, priv_key['d'], priv_key['n'])
 
@@ -143,19 +143,14 @@ def create(request, pk):
             voter.save()
             new_vote.save()
             status = 'Ballot signed successfully'
-            error = False
-        else:
-            status = 'Authentication Error'
-            error = True
+
         context = {
             'ballot': ballot,
             'signature': signature,
             'status': status,
-            'error': error,
+            'id' : new_vote.id
         }
-        print(error)
-        if not error:
-            return render(request, 'poll/status.html', context)
+        return render(request, 'poll/status.html', context)
 
     return render(request, 'poll/failure.html',{'fail':'It appears you have already voted!'})
 
@@ -164,9 +159,10 @@ prev_hash = '0' * 64
 def seal(request):
 
     if request.method == 'POST':
+        vote_id = request.POST.get('vote_id')
         if (len(models.Vote.objects.all()) % 5 != 0):
             logout(request)
-            redirect("login")
+            return render(request,'poll/votesuccess.html',{'code' : vote_id})
         else:
             global prev_hash
             transactions = models.Vote.objects.order_by('block_id').reverse()
@@ -192,6 +188,7 @@ def seal(request):
             prev_hash = self_hash
             block.save()
             print('Block {} has been mined'.format(block_id))
+            return render(request,'poll/votesuccess.html',{'code' : vote_id})
     logout(request)
     return redirect("home")
 
