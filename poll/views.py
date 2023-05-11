@@ -10,6 +10,8 @@ from hashlib import sha512, sha256
 from .merkleTree import merkleTree
 from .xtra import *
 from django.urls import reverse
+from pytz import timezone
+
 
 resultCalculated = False
 
@@ -90,20 +92,35 @@ def vote(request):
     return render(request, 'poll/vote.html', context)
 
 def signin(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username,password=password)
-        if user:
-            if user.is_active:
-                login(request,user)
-                return redirect(reverse('vote'))
+    time = get_vote_time()
+    if time[0].end>datetime.datetime.now(datetime.timezone.utc) and time[0].start<datetime.datetime.now(datetime.timezone.utc):    
+        if request.method == 'POST':
+            form = AuthenticationForm(request.POST)
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username,password=password)
+            if user:
+                if user.is_active:
+                    login(request,user)
+                    return redirect(reverse('vote'))
+            else:
+                return render(request,'poll/failure.html',{'fail':'Invalid Credentials! Try Logging In Again.'})  
         else:
-            return render(request,'poll/failure.html',{'fail':'Invalid Credentials! Try Logging In Again.'})  
+            form = AuthenticationForm()
+        return render(request,'registration/login.html',{'form':form})
     else:
-        form = AuthenticationForm()
-    return render(request,'registration/login.html',{'form':form})
+        format = "%d/%m/%Y at %H:%M:%S %Z%z"
+        if time[0].end<datetime.datetime.now(datetime.timezone.utc):
+            asia = time[0].end.astimezone(timezone('Asia/Kolkata'))
+            context = {
+                'fail' : "Voting ended on "+asia.strftime(format),
+            }
+        elif time[0].start>datetime.datetime.now(datetime.timezone.utc):
+            asia = time[0].start.astimezone(timezone("Asia/Kolkata"))
+            context = {
+                'fail' : "Voting will start on "+asia.strftime(format),
+            }
+        return render(request,'poll/failure.html',context)
 
 def create(request, pk):
     voter = models.Voter.objects.filter(username=request.user.username)[0]
@@ -197,62 +214,82 @@ def retDate(v):
     return v
 
 def verify(request):
-    if request.method == 'GET':
-        verification = ''
-        tampered_block_list = verifyVotes()
-        votes = []
-        if tampered_block_list:
-            verification = 'Verification Failed. Following blocks have been tampered --> {}.\
-                The authority will resolve the issue'.format(tampered_block_list)
-            error = True
-        else:
-            verification = 'Verification successful. All votes are intact!'
-            error = False
-            votes = models.Vote.objects.order_by('timestamp')
-            votes = [retDate(x) for x in votes]
-            
-        context = {'verification':verification, 'error':error, 'votes':votes}
-        return render(request, 'poll/verification.html', context)
-    if request.method == 'POST':
-        unique_id = request.POST.get('unique_id')
-        try:
+    time = get_vote_time()
+    if time[0].end<datetime.datetime.now(datetime.timezone.utc):
+        if request.method == 'GET':
+            verification = ''
             tampered_block_list = verifyVotes()
+            votes = []
             if tampered_block_list:
                 verification = 'Verification Failed. Following blocks have been tampered --> {}.\
-                The authority will resolve the issue'.format(tampered_block_list)
+                    The authority will resolve the issue'.format(tampered_block_list)
                 error = True
             else:
-                verification = 'Verification successful. The Vote is intact!'
+                verification = 'Verification successful. All votes are intact!'
                 error = False
-                vote = models.Vote.objects.filter(id=unique_id)
-                vote = [retDate(x) for x in vote]
-        except:
-            vote = []
-            error = True
-            verification = 'Invalid Unique ID'
-        context = {'verification':verification, 'error':error, 'votes':vote}
-        return render(request, 'poll/verification.html', context)
+                votes = models.Vote.objects.order_by('timestamp')
+                votes = [retDate(x) for x in votes]
+                
+            context = {'verification':verification, 'error':error, 'votes':votes}
+            return render(request, 'poll/verification.html', context)
+        if request.method == 'POST':
+            unique_id = request.POST.get('unique_id')
+            try:
+                tampered_block_list = verifyVotes()
+                if tampered_block_list:
+                    verification = 'Verification Failed. Following blocks have been tampered --> {}.\
+                    The authority will resolve the issue'.format(tampered_block_list)
+                    error = True
+                else:
+                    verification = 'Verification successful. The Vote is intact!'
+                    error = False
+                    vote = models.Vote.objects.filter(id=unique_id)
+                    vote = [retDate(x) for x in vote]
+            except:
+                vote = []
+                error = True
+                verification = 'Invalid Unique ID'
+            context = {'verification':verification, 'error':error, 'votes':vote}
+            return render(request, 'poll/verification.html', context)
+    else:
+        format = "%d/%m/%Y at %H:%M:%S %Z%z"
+        asia = time[0].end.astimezone(timezone('Asia/Kolkata'))
+        context = {
+            'fail' : "Verification will enable on "+asia.strftime(format),
+        }
+        return render(request,'poll/failure.html',context)
+
+
 
 def result(request):
-    if request.method == "GET":
-        global resultCalculated
-        voteVerification = verifyVotes()
-        if len(voteVerification):
-                return render(request, 'poll/verification.html', {'verification':"Verification failed.\
-                Votes have been tampered in following blocks --> {}. The authority \
-                    will resolve the issue".format(voteVerification), 'error':True})
+    time = get_vote_time()
+    if time[0].end<datetime.datetime.now(datetime.timezone.utc):
+        if request.method == "GET":
+            global resultCalculated
+            voteVerification = verifyVotes()
+            if len(voteVerification):
+                    return render(request, 'poll/verification.html', {'verification':"Verification failed.\
+                    Votes have been tampered in following blocks --> {}. The authority \
+                        will resolve the issue".format(voteVerification), 'error':True})
 
-        if not resultCalculated:
-            list_of_votes = models.Vote.objects.all()
-            for vote in list_of_votes:
-                candidate = models.Candidate.objects.filter(candidateID=vote.vote)[0]
-                candidate.count += 1
-                candidate.save()
-                
-            resultCalculated = True            
+            if not resultCalculated:
+                list_of_votes = models.Vote.objects.all()
+                for vote in list_of_votes:
+                    candidate = models.Candidate.objects.filter(candidateID=vote.vote)[0]
+                    candidate.count += 1
+                    candidate.save()
+                    
+                resultCalculated = True            
 
-        context = {"candidates":models.Candidate.objects.order_by('count'), "winner":models.Candidate.objects.order_by('count').reverse()[0]}
-        return render(request, 'poll/results.html', context)
+            context = {"candidates":models.Candidate.objects.order_by('count'), "winner":models.Candidate.objects.order_by('count').reverse()[0]}
+            return render(request, 'poll/results.html', context)
+    else:
+        format = "%d/%m/%Y at %H:%M:%S %Z%z"
+        asia = time[0].end.astimezone(timezone('Asia/Kolkata'))
+        context = {
+            'fail' : "Result will be displayed after "+asia.strftime(format),
+        }
+        return render(request,'poll/failure.html',context)
 
 
 def verifyVotes():

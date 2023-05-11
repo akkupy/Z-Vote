@@ -65,3 +65,6 @@ class Block(models.Model):
     def __str__(self):
         return str(self.self_hash)
 
+class VoteTime(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField()

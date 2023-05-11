@@ -4,11 +4,12 @@ import random
 import requests
 from dotenv import load_dotenv, find_dotenv
 import os
-
 import base64
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+from .models import VoteTime
 
 from twilio.rest import Client
 
@@ -91,3 +92,7 @@ def sms(tonum,data):
                        to=tonum,
                        body=data)
     
+def get_vote_time():
+    datetime = VoteTime.objects.all()
+    return datetime
+
