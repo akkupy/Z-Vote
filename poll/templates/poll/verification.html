@@ -8,6 +8,16 @@
         <div class="alert alert-success text-center">
             <h4 class="alert-header">{{verification}}</h4>
         </div>
+        <div class="w-25">
+            <form action="/verify" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Find" class="btn btn-dark" style="float: right" />
+                <div style="overflow: hidden;padding-right: .5em; ">
+                <input type="text" class="form-control rounded" name="unique_id" placeholder="Enter Your Unique ID" style="width: 100%;" />
+                </div>
+
+            </form>
+        </div><br><br>
         <div class="container-fluid">
             <table class="table table-bordered table-striped">
                 <thead class="thead-dark">

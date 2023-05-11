@@ -213,6 +213,25 @@ def verify(request):
             
         context = {'verification':verification, 'error':error, 'votes':votes}
         return render(request, 'poll/verification.html', context)
+    if request.method == 'POST':
+        unique_id = request.POST.get('unique_id')
+        try:
+            tampered_block_list = verifyVotes()
+            if tampered_block_list:
+                verification = 'Verification Failed. Following blocks have been tampered --> {}.\
+                The authority will resolve the issue'.format(tampered_block_list)
+                error = True
+            else:
+                verification = 'Verification successful. The Vote is intact!'
+                error = False
+                vote = models.Vote.objects.filter(id=unique_id)
+                vote = [retDate(x) for x in vote]
+        except:
+            vote = []
+            error = True
+            verification = 'Invalid Unique ID'
+        context = {'verification':verification, 'error':error, 'votes':vote}
+        return render(request, 'poll/verification.html', context)
 
 def result(request):
     if request.method == "GET":

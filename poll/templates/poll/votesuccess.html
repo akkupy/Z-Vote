@@ -1,5 +1,16 @@
 {% extends 'poll/base.html' %}
 {% block content %}
+<script>
+    function copyMyText() {
+         //select the element with the id "copyMe", must be a text box
+         var textToCopy = document.getElementById("copyMe");
+         //select the text in the text box
+         textToCopy.select();
+         //copy the text to the clipboard
+         document.execCommand("copy");
+         alert("The Passphrase is Copied!");
+    }
+</script>
     <div class="alert alert-success text-center">
         <h1 class="alert-heading">You have Successfully Voted!</h1>
     </div><br><br>
