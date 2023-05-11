@@ -11,6 +11,7 @@ from .merkleTree import merkleTree
 from .xtra import *
 from django.urls import reverse
 from pytz import timezone
+from django.contrib.auth.decorators import login_required
 
 
 resultCalculated = False
@@ -86,6 +87,7 @@ def register(request):
             return render(request,'poll/failure.html',{'fail' : 'Invalid Voter!'})
     return render(request,'registration/register.html/')
 
+@login_required(login_url='login')
 def vote(request):
     candidates = models.Candidate.objects.all()
     context = {'candidates': candidates}
@@ -122,6 +124,7 @@ def signin(request):
             }
         return render(request,'poll/failure.html',context)
 
+@login_required(login_url='login')
 def create(request, pk):
     voter = models.Voter.objects.filter(username=request.user.username)[0]
     if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
@@ -140,14 +143,13 @@ def create(request, pk):
         try:
             privateKey_d,privateKey_n=decrypt(phrase,voterpvt[0]['private_key_d'],voterpvt[0]['private_key_n'],voterpvt[0]['salt'])
         except:
+            logout(request)
             return render(request,'poll/failure.html',{'fail':'Invalid Passphrase Please Login And Vote Again.'})   
 
         priv_key = {'n': int(privateKey_n), 'd':int(privateKey_d)}
         pub_key = {'n':int(voter.public_key_n), 'e':int(voter.public_key_e)}
-        # Create ballot as string vector
         timestamp = datetime.datetime.now().timestamp()
         ballot = "{}|{}".format(vote, timestamp)
-        #print('\ncasted ballot: {}\n'.format(ballot))
         h = int.from_bytes(sha512(ballot.encode()).digest(), byteorder='big')
         signature = pow(h, priv_key['d'], priv_key['n'])
 
@@ -168,11 +170,12 @@ def create(request, pk):
             'id' : new_vote.id
         }
         return render(request, 'poll/status.html', context)
-
+    logout(request)
     return render(request, 'poll/failure.html',{'fail':'It appears you have already voted!'})
 
 prev_hash = '0' * 64
 
+@login_required(login_url='login')
 def seal(request):
 
     if request.method == 'POST':
