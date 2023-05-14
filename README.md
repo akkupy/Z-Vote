@@ -1,3 +1,5 @@
+<p align="center"><a href="https://akkupy.me"><img src="https://www.mdpi.com/sensors/sensors-21-05874/article_deploy/html/images/sensors-21-05874-g004-550.jpg" width="5000"></a></p> 
+
 <h1 align="center"><b>BlockChain Based E-Voting System</b></h1>
 
 * This project aims at implementing a voting system based on Blockchain technology. 
@@ -32,6 +34,12 @@ $ python(3) manage.py runserver 0.0.0.0:80
 ```
 
 # Mandatory Configs
+
+1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
+2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
+
+Fill the .env file with the obtained values.
+
 ```
 [+] Create a .env file in the root directory for the api tokens
     [-] API_NINJA_API = ''
@@ -50,11 +58,6 @@ TWILIO_PHONE_NUMBER = '+134656544'
 ```
 
 ## Screenshots:
-<img width="960" alt="vote_verification" src="https://user-images.githubusercontent.com/54449305/80915076-5679dc80-8d6d-11ea-9650-3fe960bd9896.png">
-
-<img width="960" alt="user-authentication" src="https://user-images.githubusercontent.com/54449305/80915092-73161480-8d6d-11ea-923a-15f4788d8e40.png">
-
-![vote_page](https://user-images.githubusercontent.com/54449305/80915104-8a550200-8d6d-11ea-9880-d0c111d4d096.png)
 
 
 # Contact Me
