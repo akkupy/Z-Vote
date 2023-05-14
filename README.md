@@ -1,3 +1,5 @@
+<p align="center"><a href="https://akkupy.me"><img src="https://www.mdpi.com/sensors/sensors-21-05874/article_deploy/html/images/sensors-21-05874-g004-550.jpg" width="5000"></a></p> 
+
 <h1 align="center"><b>BlockChain Based E-Voting System</b></h1>
 
 * This project aims at implementing a voting system based on Blockchain technology. 
@@ -32,6 +34,12 @@ $ python(3) manage.py runserver 0.0.0.0:80
 ```
 
 # Mandatory Configs
+
+1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
+2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
+
+Fill the .env file with the obtained values.
+
 ```
 [+] Create a .env file in the root directory for the api tokens
     [-] API_NINJA_API = ''
@@ -50,11 +58,38 @@ TWILIO_PHONE_NUMBER = '+134656544'
 ```
 
 ## Screenshots:
-<img width="960" alt="vote_verification" src="https://user-images.githubusercontent.com/54449305/80915076-5679dc80-8d6d-11ea-9650-3fe960bd9896.png">
 
-<img width="960" alt="user-authentication" src="https://user-images.githubusercontent.com/54449305/80915092-73161480-8d6d-11ea-923a-15f4788d8e40.png">
+<h4 align="center"><b>Home Page</b></h4>
 
-![vote_page](https://user-images.githubusercontent.com/54449305/80915104-8a550200-8d6d-11ea-9880-d0c111d4d096.png)
+![home](https://github.com/akkupy/Z-Vote/assets/69421964/0373134c-70e1-44a6-ba28-e416c7390993)
+
+<h4 align="center"><b>Register Page</b></h4>
+
+![register](https://github.com/akkupy/Z-Vote/assets/69421964/c7f60ed3-e898-4b30-beca-8dda273ea79b)
+
+<h4 align="center"><b>OTP Page</b></h4>
+
+![otp](https://github.com/akkupy/Z-Vote/assets/69421964/c7a081e9-15b6-4ebb-ab59-eb29564a0a94)
+
+<h4 align="center"><b>Registration Successful</b></h4>
+
+![reg_succ](https://github.com/akkupy/Z-Vote/assets/69421964/5b86ca86-b4ee-467c-b00b-e24765ccfa54)
+
+<h4 align="center"><b>Login Page</b></h4>
+
+![login](https://github.com/akkupy/Z-Vote/assets/69421964/f2fe7b72-5d14-4411-a48e-bc2509721d6b)
+
+<h4 align="center"><b>Voting Page</b></h4>
+
+![vote](https://github.com/akkupy/Z-Vote/assets/69421964/808ab136-a80a-46be-ae9a-70d6f4740dad)
+
+<h4 align="center"><b>Vote Verification Page</b></h4>
+
+![verification](https://github.com/akkupy/Z-Vote/assets/69421964/8c1675de-1dbf-48ce-9305-7eff49f928d9)
+
+<h4 align="center"><b>Result</b></h4>
+
+![result](https://github.com/akkupy/Z-Vote/assets/69421964/32006491-cd8f-40f7-9c5a-84a6be11ced4)
 
 
 # Contact Me
