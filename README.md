@@ -58,13 +58,37 @@ TWILIO_PHONE_NUMBER = '+134656544'
 ```
 
 ## Screenshots:
+
+<h4 align="center"><b>Home Page</b></h4>
+
 ![home](https://github.com/akkupy/Z-Vote/assets/69421964/0373134c-70e1-44a6-ba28-e416c7390993)
+
+<h4 align="center"><b>Register Page</b></h4>
+
 ![register](https://github.com/akkupy/Z-Vote/assets/69421964/c7f60ed3-e898-4b30-beca-8dda273ea79b)
-![reg_succ](https://github.com/akkupy/Z-Vote/assets/69421964/5b86ca86-b4ee-467c-b00b-e24765ccfa54)
+
+<h4 align="center"><b>OTP Page</b></h4>
+
 ![otp](https://github.com/akkupy/Z-Vote/assets/69421964/c7a081e9-15b6-4ebb-ab59-eb29564a0a94)
+
+<h4 align="center"><b>Registration Successful</b></h4>
+
+![reg_succ](https://github.com/akkupy/Z-Vote/assets/69421964/5b86ca86-b4ee-467c-b00b-e24765ccfa54)
+
+<h4 align="center"><b>Login Page</b></h4>
+
 ![login](https://github.com/akkupy/Z-Vote/assets/69421964/f2fe7b72-5d14-4411-a48e-bc2509721d6b)
+
+<h4 align="center"><b>Voting Page</b></h4>
+
 ![vote](https://github.com/akkupy/Z-Vote/assets/69421964/808ab136-a80a-46be-ae9a-70d6f4740dad)
+
+<h4 align="center"><b>Vote Verification Page</b></h4>
+
 ![verification](https://github.com/akkupy/Z-Vote/assets/69421964/8c1675de-1dbf-48ce-9305-7eff49f928d9)
+
+<h4 align="center"><b>Result</b></h4>
+
 ![result](https://github.com/akkupy/Z-Vote/assets/69421964/32006491-cd8f-40f7-9c5a-84a6be11ced4)
 
 
