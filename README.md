@@ -33,7 +33,7 @@ $ . ./venv/bin/activate
 $ pip(3) install -r requirements.txt
 
 # Run makemigrations and migrate command.
-$ python(3) manage.py makemigrations
+$ python(3) manage.py makemigrations poll
 $ python(3) manage.py migrate
 
 # Create a Superuser.
