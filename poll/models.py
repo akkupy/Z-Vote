@@ -66,5 +66,6 @@ class Block(models.Model):
         return str(self.self_hash)
 
 class VoteTime(models.Model):
+    username = models.CharField(max_length=30,primary_key=True,default='admin')
     start = models.DateTimeField()
     end = models.DateTimeField()
