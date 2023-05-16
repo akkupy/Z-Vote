@@ -1,6 +1,7 @@
 aiohttp==3.8.4
 aiohttp-retry==2.8.3
 aiosignal==1.3.1
+gunicorn==20.1.0
 asgiref==3.6.0
 async-timeout==4.0.2
 attrs==23.1.0
