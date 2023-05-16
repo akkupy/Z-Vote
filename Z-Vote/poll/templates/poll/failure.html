@@ -1,0 +1,10 @@
+{% extends 'poll/base.html' %}
+{% block content %}
+    <div class="alert alert-danger text-center">
+        <h3 class="alert-heading">{{ fail }}</h3>
+    </div>
+    <div class="text-center">
+        <button onclick="location.href='/'" type="button" class="btn btn-dark btn-lg">Home</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="location.href='/login'" type="button" class="btn btn-dark btn-lg">Vote</button><br>
+    </div>
+{% endblock content %}

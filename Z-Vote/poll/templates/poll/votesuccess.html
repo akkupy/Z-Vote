@@ -1,0 +1,38 @@
+{% extends 'poll/base.html' %}
+{% block content %}
+<script>
+    function copyMyText() {
+         //select the element with the id "copyMe", must be a text box
+         var textToCopy = document.getElementById("copyMe");
+         //select the text in the text box
+         textToCopy.select();
+         //copy the text to the clipboard
+         document.execCommand("copy");
+         alert("The Unique ID is Copied!");
+    }
+</script>
+    <div class="alert alert-success text-center">
+        <h1 class="alert-heading">You have Successfully Voted!</h1>
+    </div><br><br>
+    <div class="alert alert-dark text-center" id = "containerIntro">
+        <h5 class="alert-heading" style="display: inline;vertical-align: top;font-family: 'Open Sans', sans-serif;font-size: 16px;line-height: 28px;">YOUR UNIQUE ID IS : </h5>
+        <input type="text" value="{{ code }}" id="copyMe"  style="display: inline;vertical-align: top;font-family: 'Open Sans', sans-serif;font-size: 16px;line-height: 28px;" readonly>
+        <button onclick="copyMyText()" class="btn btn-primary">Copy ID</button><br>
+    </div>
+    <br><br>
+    <div class="alert alert-primary text-center" role="alert">
+        <h4 class="alert-heading">NOTICE</h4>
+        <p>You can use this ID to verify your vote in the 'Verify Votes' section.</p>
+        <p>The Vote Verifying feature will be available only after the voting time is over.</p>
+        <hr>
+        <p class="mb-0"></p>NOTE: You will not be able to retreive this ID after leaving this page.</p>
+    </div>
+    <div class="text-center">
+        <button onclick="location.href='/'" type="button" class="btn btn-primary">Go to Home</button><br>
+    </div>
+    
+
+
+
+
+{% endblock content %}

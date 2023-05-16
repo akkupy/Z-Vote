@@ -1,0 +1,21 @@
+{% extends 'poll/base.html' %}
+{% block content %}
+
+    <div class="container">
+        <h1 style="margin-bottom: 30px; text-align: center;">Signature Verification</h1>
+        <div style="padding:3%; border:1px solid black;">
+            <p>Your ballot was <code>{{ ballot }}</code></p>
+            <p>Generated signature <code>{{ signature }}</code></p><br>
+            <p style="color:green;">
+                {{ status }}
+            </p>
+        
+            <form action="{% url 'seal' %}" method="POST">
+                {% csrf_token %}
+                <input name="ballot_input" type="hidden" value="{{ ballot }}">
+                <input name="vote_id" type="hidden" value="{{ id }}">
+                <button type="submit" class="btn btn-primary btn-block">Seal the ballot</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

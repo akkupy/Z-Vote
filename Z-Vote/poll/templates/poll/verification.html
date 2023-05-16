@@ -1,0 +1,45 @@
+{% extends 'poll/base.html' %}
+{% block content %}
+    {% if error %}
+        <div class="alert alert-danger text-center">
+            <h4 class="alert-header">{{verification}}</h4>
+        </div>
+    {% else %}
+        <div class="alert alert-success text-center">
+            <h4 class="alert-header">{{verification}}</h4>
+        </div>
+        <div class="w-25">
+            <form action="/verify" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Find" class="btn btn-dark" style="float: right" />
+                <div style="overflow: hidden;padding-right: .5em; ">
+                <input type="text" class="form-control rounded" name="unique_id" placeholder="Enter Your Unique ID" style="width: 100%;" />
+                </div>
+
+            </form>
+        </div><br><br>
+        <div class="container-fluid">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Unique ID</th>
+                        <th scope="col">Candidate ID</th>
+                        <th scope="col">Timestamp</th>
+                        <th scope="col">Block_ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vote in votes %}
+                    <tr>
+                        <td>{{ vote.id }}</td>
+                        <td>{{ vote.vote }}</td>
+                        <td>{{ vote.timestamp }}</td>
+                        <td>{{ vote.block_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+{% endblock %}
