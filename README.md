@@ -89,7 +89,7 @@ docker run -d \
   -p 8100:8100 \
   -v ./static:/app/static \
   --restart unless-stopped \
-  z-vote:v1
+  akkupy/z-vote:v1
 ```
 
 7. Exec into the container using the command below
@@ -181,7 +181,7 @@ Once you click Save it will generate a new certificate this can take a few minut
 
 You can use a self generated SSL certificate(which can be generated [here](https://github.com/akkupy/Self_Signed_SSL_Cerificate)).In this case select Custom under the SSL Certificates and upload the key and certificate generated.
 
-### Post SSL Certificate Gerneration Go to Advanced Tab
+## Post SSL Certificate Gerneration Go to Advanced Tab
 
 * Paste the Nginx Configuration given below(Change proxy_pass address to the one defined on details page).
 
