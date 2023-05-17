@@ -15,7 +15,13 @@
 4. DB SQLite 3
 5. HTML5
 
-# Self-hosting (For Devs)
+# Z-vote Production Deployment On Docker ([click image](https://github.com/akkupy/Z-Vote/tree/production))
+
+<p align="center"><a href="https://github.com/akkupy/Z-Vote/tree/production"><img src="https://github.com/akkupy/Z-Vote/assets/69421964/becd50b0-006d-4ae8-a47b-b19cdb4c98e4" width="400"></a></p> 
+
+
+
+# Self-hosting(Development Server)
 
 ## Simply clone the repository and run the server:
 ```sh
