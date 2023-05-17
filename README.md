@@ -15,100 +15,202 @@
 4. DB SQLite 3
 5. HTML5
 
-# Self-hosting (For Devs)
-
-## Simply clone the repository and run the server:
-```sh
-# Install Git First // (Else You Can Download And Upload to Your Local Server)
-$ git clone https://github.com/akkupy/Z-Vote.git
-
-# Open Git Cloned File
-$ cd Z-Vote
-
-# Config Virtual Env (Skip is already Done.)
-$ virtualenv -p /usr/bin/python3 venv
-$ . ./venv/bin/activate
-
-# Install All Requirements.
-$ pip(3) install -r requirements.txt
-
-# Run makemigrations and migrate command.
-$ python(3) manage.py makemigrations poll
-$ python(3) manage.py migrate
-
-# Create a Superuser.
-$ python(3) manage.py createsuperuser
-
-# Create a .env file(See Below for more details.)
-
-# Start Server
-$ python(3) manage.py runserver 0.0.0.0:80
-# Head over to http://127.0.0.1/ to see the website.
-
-# Head over to http://127.0.0.1/admin to add the voterlists in 'Voter lists' table and the candidates in the 'Candidates' table.
-
-# Set the Voting Time in 'Vote times' table(Only one object is needed for voting time).
-
-# Now the project is ready for Voting!
-```
 
 # Mandatory Configs
 
 1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
 2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
 
-Fill the .env file with the obtained values.
+Fill the env file with the obtained APIs.
 
 ```
-[+] Create a .env file in the root directory for the api tokens
-    [-] API_NINJA_API = ''
-    [-] TWILIO_ACCOUNT_SID = ''
-    [-] TWILIO_AUTH_TOKEN = ''
-    [-] TWILIO_PHONE_NUMBER = ''
+[+] Create a env file in the root directory for the api tokens
+    [-] DJANGO_SECRET_KEY=
+    [-] DEBUG=
+    [-] DJANGO_ALLOWED_HOSTS=
+    [-] DJANGO_CSRF_TRUSTED_ORIGINS=
+    [-] API_NINJA_API =
+    [-] TWILIO_ACCOUNT_SID =
+    [-] TWILIO_AUTH_TOKEN = 
+    [-] TWILIO_PHONE_NUMBER = 
+```
+## An Example Of "env" File
+```
+DJANGO_SECRET_KEY=#sdfgg4g7h%-y8b+34_^s$yo^$a63&*$Fb3^d
+DEBUG=False
+DJANGO_ALLOWED_HOSTS=10.1.1.50
+API_NINJA_API=/ghjf53spoG657vghjygdr0qw==uRVWERV
+TWILIO_ACCOUNT_SID=AA3w5fgdrfawd3459faedw4349a3b
+TWILIO_AUTH_TOKEN=awd18f3ccac7329thfsf43fd4drgx1
+TWILIO_PHONE_NUMBER=+134656544
+DJANGO_CSRF_TRUSTED_ORIGINS=https://10.1.1.50
+```
+
+# Z-vote Deployment On [Raspberrypi Docker Container](https://github.com/akkupy/Homelab)
+
+## Install Docker and Portainer if not already done.([refer here](https://github.com/akkupy/Homelab#installation-of-docker-and-portainer))
+
+
+### Folder Setup Script
+
+1. First thing we need to do is setup the folder structure. 
+
+Run the following script
+```
+wget -qO- https://raw.githubusercontent.com/akkupy/Homelab/main/scripts/zvote_dir.sh | sudo bash
+```
+
+2. Now we need to move into that directory using the following:
+
+```
+cd /home/$USER/zvote
+```
+3. Create an 'env' file 
+
+```
+sudo nano env
+```
+
+4. Fill the environment variables(see above)
+
+5. Pull the docker image of [z-vote](https://hub.docker.com/r/akkupy/z-vote)
+
+```
+docker pull akkupy/z-vote
+```
+6. Run the container
+
+```
+docker run -d \
+  --name=z-vote \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  --env-file env \
+  -p 8100:8100 \
+  -v ./static:/app/static \
+  --restart unless-stopped \
+  z-vote:v1
+```
+
+7. Exec into the container using the command below
+
+```
+docker exec -it z-vote sh
+```
+* You will see a new terminal like shown below.
+
+```
+/app #
+```
+
+8. Run the following commands on the container terminal.
+
+* Enter the username and password for the superuser when prompted.
+
+```
+python manage.py makemigrations poll
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py collectstatic --noinput
+```
+9. Press Ctrl+D to exit the container Terminal.
+
+## Install Nginx Proxy Manager if not already done([refer here](https://github.com/akkupy/Homelab/blob/main/docs/nginx_proxy_manager.md)).
+
+### Add a new volume(given below) to the nginx proxy manager container using portainer.
+
+```
+/home/$USER/zvote/static:/data/static
+```
+
+### Setting up Nginx Proxy Manager for Z-vote
+<br>
+
+Go to login screen.
+![First Login](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-First-Login.png)
+
+### Select Hosts > Proxy Hosts
+
+![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-Proxy-Host.png)
+
+Select Add Proxy Hosts
+
+![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-Menu-Add-Proxy-Host.png)
+
+We need to enter the proxy information.  In this example we are going to use the following information.
+
+Secure External connections to the service using https.<br>
+Domain Name: homer.example.com<br>
+Scheme: https<br>
+Forward Hostname/IP address: 192.168.1.23<br>
+Port: 8902<br>
+Cache Assets: Disabled<br>
+Block Common Exploits: Enabled<br>
+Websockets Support: Disabled<br>
+Accesss List: Publicly Accessible<br>
+
+> Most of these options should be self explanatory if you aren't sure what they do it is likely best to leave them disabled.
+
+The most import options.<br>  
+Domain Name is the public Domain name that will point at your host.<br>
+Forward Hostname/IP is the server running the resource.<br>
+Port is the port the service is running on that server.<br>
+
+
+![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-New-Proxy-Host.png)
+
+> Hint: Generating Certificates can be complicated I will be outlining one of the simplest ways to generate one.  There are other ways not outlined here.
+
+Now we need to setup our secure https connection to the server.  Select the SSL tab.
+
+## Method 1(Recommended for internet based usage):
+
+Under SSL Certificates we are going to select Request a new SSL Certificate.
+
+I am also going to select Force SSL this will prevent non-secure connections from being used.  
+
+I will agree to the terms after reading them you should at least review them once so you understand the terms of service.
+
+It should have your correct email address listed if it doesn't please fix as this is where you will get alerts if there is an issue with the Certificate.
+
+![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-New-Proxy-Host-SSL.png)
+
+Once you click Save it will generate a new certificate this can take a few minutes to do.
+
+## Method 2(Recommended for Local usage and usage with [tailscale](https://github.com/akkupy/Homelab/blob/main/docs/tailscale.md)):
+
+You can use a self generated SSL certificate(which can be generated [here](https://github.com/akkupy/Self_Signed_SSL_Cerificate)).In this case select Custom under the SSL Certificates and upload the key and certificate generated.
+
+### Post SSL Certificate Gerneration Go to Advanced Tab
+
+* Paste the Nginx Configuration given below(Change proxy_pass address to the one defined on details page).
+
+```
+location /static/{
+                 root /data;
+        }
+    location / {
+          proxy_pass http://<ip>:<port>;
+    }
+
 ```
 
 
-## An Example Of ".env" File
+<br><br><br><br><br>
+
+
+# Building Docker Container from Dockerfile (For Devs)
+
+## Clone the repository and run the main file:
+```sh
+# Install Git First // (Else You Can Download And Upload to Your Local Server)
+$ git clone -b production https://github.com/akkupy/Z-Vote.git
+# Open Git Cloned File
+$ cd Z-Vote
+# Run Docker Build
+$ docker build -t <name>:<tag> .
 ```
-API_NINJA_API = '/ghjf53spoG657vghjygdr0qw==uRVWERV'
-TWILIO_ACCOUNT_SID = 'AA3w5fgdrfawd3459faedw4349a3b'
-TWILIO_AUTH_TOKEN = 'awd18f3ccac7329thfsf43fd4drgx1'
-TWILIO_PHONE_NUMBER = '+134656544'
-```
 
-## Screenshots:
-
-<h4 align="center"><b>Home Page</b></h4>
-
-![home](https://github.com/akkupy/Z-Vote/assets/69421964/0373134c-70e1-44a6-ba28-e416c7390993)
-
-<h4 align="center"><b>Register Page</b></h4>
-
-![register](https://github.com/akkupy/Z-Vote/assets/69421964/c7f60ed3-e898-4b30-beca-8dda273ea79b)
-
-<h4 align="center"><b>OTP Page</b></h4>
-
-![otp](https://github.com/akkupy/Z-Vote/assets/69421964/c7a081e9-15b6-4ebb-ab59-eb29564a0a94)
-
-<h4 align="center"><b>Registration Successful</b></h4>
-
-![reg_succ](https://github.com/akkupy/Z-Vote/assets/69421964/5b86ca86-b4ee-467c-b00b-e24765ccfa54)
-
-<h4 align="center"><b>Login Page</b></h4>
-
-![login](https://github.com/akkupy/Z-Vote/assets/69421964/f2fe7b72-5d14-4411-a48e-bc2509721d6b)
-
-<h4 align="center"><b>Voting Page</b></h4>
-
-![vote](https://github.com/akkupy/Z-Vote/assets/69421964/808ab136-a80a-46be-ae9a-70d6f4740dad)
-
-<h4 align="center"><b>Vote Verification Page</b></h4>
-
-![verification](https://github.com/akkupy/Z-Vote/assets/69421964/8c1675de-1dbf-48ce-9305-7eff49f928d9)
-
-<h4 align="center"><b>Result</b></h4>
-
-![result](https://github.com/akkupy/Z-Vote/assets/69421964/32006491-cd8f-40f7-9c5a-84a6be11ced4)
 
 
 # Contact Me
