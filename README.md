@@ -71,12 +71,12 @@ cd /home/$USER/zvote
 sudo nano env
 ```
 
-4. Fill the environment variables(see above)
+4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs))
 
 5. Pull the docker image of [z-vote](https://hub.docker.com/r/akkupy/z-vote)
 
 ```
-docker pull akkupy/z-vote
+docker pull akkupy/z-vote:latest
 ```
 6. Run the container
 
@@ -89,7 +89,7 @@ docker run -d \
   -p 8100:8100 \
   -v ./static:/app/static \
   --restart unless-stopped \
-  akkupy/z-vote:v1
+  akkupy/z-vote:latest
 ```
 
 7. Exec into the container using the command below
