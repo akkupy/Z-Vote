@@ -201,7 +201,7 @@ location /static/{
 
 # Building Docker Container from Dockerfile (For Devs)
 
-## Clone the repository and run the main file:
+## * Clone the repository and Build the container:
 ```sh
 # Install Git First // (Else You Can Download And Upload to Your Local Server)
 $ git clone -b production https://github.com/akkupy/Z-Vote.git
@@ -210,8 +210,13 @@ $ cd Z-Vote
 # Run Docker Build
 $ docker build -t <name>:<tag> .
 ```
+## * Create env file([refer here](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs))
+
+## * Run and Configure the container([refer here](https://github.com/akkupy/Z-Vote/tree/production#z-vote-deployment-on-raspberrypi-docker-container))
 
 
+
+<br><br><br>
 
 # Contact Me
  [![telegram](https://img.shields.io/badge/Akku-000000?style=for-the-badge&logo=telegram)](https://t.me/akkupy)
