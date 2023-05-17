@@ -142,8 +142,8 @@ We need to enter the proxy information.  In this example we are going to use the
 Secure External connections to the service using https.<br>
 Domain Name: homer.example.com<br>
 Scheme: https<br>
-Forward Hostname/IP address: 192.168.1.23<br>
-Port: 8902<br>
+Forward Hostname/IP address: your-ip<br>
+Port: 8100<br>
 Cache Assets: Disabled<br>
 Block Common Exploits: Enabled<br>
 Websockets Support: Disabled<br>
@@ -154,7 +154,7 @@ Accesss List: Publicly Accessible<br>
 The most import options.<br>  
 Domain Name is the public Domain name that will point at your host.<br>
 Forward Hostname/IP is the server running the resource.<br>
-Port is the port the service is running on that server.<br>
+Port is the port the service is running on that server(In our case its '8100').<br>
 
 
 ![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-New-Proxy-Host.png)
@@ -190,7 +190,7 @@ location /static/{
                  root /data;
         }
     location / {
-          proxy_pass http://<ip>:<port>;
+          proxy_pass http://<ip>:8100;
     }
 
 ```
