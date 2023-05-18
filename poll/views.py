@@ -17,7 +17,24 @@ from django.contrib.auth.decorators import login_required
 resultCalculated = False
 
 def home(request):
-    return render(request, 'poll/home.html')
+    error = False
+    try:
+        time = get_vote_time()
+        format = "%d/%m/%Y at %H:%M:%S %Z%z"
+        asia_start = time[0].start.astimezone(timezone("Asia/Kolkata"))
+        asia_end = time[0].end.astimezone(timezone('Asia/Kolkata'))
+        context = {
+            'error' : error,
+            'start' : asia_start.strftime(format),
+            'end' : asia_end.strftime(format),
+        }
+    except:
+        error = True
+        context = {
+            'error' : error
+        }
+
+    return render(request, 'poll/home.html',context)
 
 def otp(request):
     if request.method == "POST":

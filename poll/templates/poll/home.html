@@ -8,8 +8,14 @@
             and securely mining blocks out of them. This way anyone can monitor votes but at the same time
             your vote is completely anonymous, preserving your identity.
             <br>
-            
         </p>
+        {% if error %}
+        <br>
+        <h3>Voting Time : Voting Authority haven't set a Voting Time Yet.</h3>
+        {% else %}
+        <br>
+        <h3>Voting Time : {{start}}   to   {{end}}</h3>
+        {% endif %}
 
     </div>
     <div class="text-center">
