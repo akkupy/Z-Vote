@@ -36,24 +36,24 @@ Fill the env file with the obtained APIs.
 ```
 <br>
 
-* DJANGO_SECRET_KEY - Enter the Django Project Secret Key.(Generate random key [here](https://djecrety.ir/)) .
+* <b>DJANGO_SECRET_KEY</b> - Enter the Django Project Secret Key.(Generate random key [here](https://djecrety.ir/)) .
 
-* DEBUG - Debug state of Django Project(Set to empty for False).
+* <b>DEBUG</b> - Debug state of Django Project(Set to empty for False).
   * ALWAYS set to FALSE during PRODUCTION.
 
   <br>
 
-* DJANGO_ALLOWED_HOSTS - Enter the domain name or ip used for accessing the application.
+* <b>DJANGO_ALLOWED_HOSTS</b> - Enter the domain name or ip used for accessing the application.
 
-* DJANGO_CSRF_TRUSTED_ORIGINS = Enter the link of your domain eg: https://domain_name.com or https://ip_address .
+* <b>DJANGO_CSRF_TRUSTED_ORIGINS</b> = Enter the link of your domain eg: https://domain_name.com or https://ip_address .
 
-* API_NINJA_API - Enter the API Token of Api Ninja for generating random passphrase.
+* <b>API_NINJA_API</b> - Enter the API Token of Api Ninja for generating random passphrase.
 
-* TWILIO_ACCOUNT_SID - Enter the Twilio Account SID Obtained.
+* <b>TWILIO_ACCOUNT_SID</b> - Enter the Twilio Account SID Obtained.
 
-* TWILIO_AUTH_TOKEN - Enter the Twilio Auth Token Obtained.
+* <b>TWILIO_AUTH_TOKEN</b> - Enter the Twilio Auth Token Obtained.
 
-* TWILIO_PHONE_NUMBER - Enter your Twilio Phone Number , Used for sending OTP.
+* <b>TWILIO_PHONE_NUMBER</b> - Enter your Twilio Phone Number , Used for sending OTP.
 
 <br>
 
