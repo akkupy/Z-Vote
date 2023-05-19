@@ -70,7 +70,7 @@ TWILIO_PHONE_NUMBER=+134656544
 ```
 <br>
 
-# Z-vote Production Deployment On Docker
+# Z-vote Production Server On Docker
 <br>
 
 ## Install Docker and Portainer if not already done.([refer here](https://github.com/akkupy/Homelab#installation-of-docker-and-portainer))
