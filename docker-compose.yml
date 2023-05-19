@@ -1,0 +1,47 @@
+
+version: '3'
+
+services:
+
+  zvote:
+    env_file:
+      - env
+    image: akkupy/z-vote:latest
+    container_name: zvote
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - static_volume:/app/static
+    networks:
+      - nginx_network
+    restart: unless-stopped
+  nginx:
+    image: nginx:latest
+    container_name: nginx-zvote
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    ports:
+      - 8000:80
+      - 8001:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/data/static
+      - ./nginx/vote.crt:/etc/ssl/vote.crt:ro
+      - ./nginx/vote.key:/etc/ssl/vote.key:ro
+    depends_on:
+      - zvote
+    networks:
+      - nginx_network
+    restart: unless-stopped
+
+
+networks:
+  nginx_network:
+    driver: bridge
+
+volumes:
+  static_volume:  
