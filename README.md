@@ -45,7 +45,7 @@ Fill the env file with the obtained APIs.
 
 * <b>DJANGO_ALLOWED_HOSTS</b> - Enter the domain name or ip used for accessing the application.
 
-* <b>DJANGO_CSRF_TRUSTED_ORIGINS</b> = Enter the link of your domain eg: https://domain_name.com or https://ip_address .
+* <b>DJANGO_CSRF_TRUSTED_ORIGINS</b> - Enter the link of your domain eg: https://domain_name.com or https://ip_address .
 
 * <b>API_NINJA_API</b> - Enter the API Token of Api Ninja for generating random passphrase.
 
