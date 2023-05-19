@@ -194,7 +194,7 @@ $ docker build -t <name>:<tag> .
 ```
 ## * Create env file([refer here](https://github.com/akkupy/Z-Vote/tree/production#environment-variables))
 
-## * Run and Configure the container([refer here](https://github.com/akkupy/Z-Vote/tree/production#z-vote-production-deployment-on-docker))
+## * Run and Configure the container([refer here](https://github.com/akkupy/Z-Vote/tree/production#z-vote-production-server-on-docker))
 
 
 
