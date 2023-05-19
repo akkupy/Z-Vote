@@ -58,7 +58,7 @@ $ python(3) manage.py runserver 0.0.0.0:80
 # Now the project is ready for Voting!
 ```
 
-# Mandatory Configs
+# Environment Variables
 
 1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
 2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
