@@ -95,7 +95,7 @@ sudo nano env
 ```
 <br><br>
 
-4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs)).
+4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
 
 <br><br>
 
