@@ -16,7 +16,7 @@
 5. HTML5
 
 
-# Mandatory Configs
+# Environment Variables.
 
 1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
 2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
@@ -24,7 +24,7 @@
 Fill the env file with the obtained APIs.
 
 ```
-[+] Create a env file in the root directory for the api tokens
+[+] Create a env file in the root directory
     [-] DJANGO_SECRET_KEY=
     [-] DEBUG=
     [-] DJANGO_ALLOWED_HOSTS=
@@ -34,76 +34,120 @@ Fill the env file with the obtained APIs.
     [-] TWILIO_AUTH_TOKEN = 
     [-] TWILIO_PHONE_NUMBER = 
 ```
+<br>
+
+* DJANGO_SECRET_KEY - Enter the Django Project Secret Key.(Generate random key [here](https://djecrety.ir/)) .
+
+* DEBUG - Debug state of Django Project(Set to empty for False).
+  * ALWAYS set to FALSE during PRODUCTION.
+
+  <br>
+
+* DJANGO_ALLOWED_HOSTS - Enter the domain name or ip used for accessing the application.
+
+* DJANGO_CSRF_TRUSTED_ORIGINS = Enter the link of your domain eg: https://domain_name.com or https://ip_address .
+
+* API_NINJA_API - Enter the API Token of Api Ninja for generating random passphrase.
+
+* TWILIO_ACCOUNT_SID - Enter the Twilio Account SID Obtained.
+
+* TWILIO_AUTH_TOKEN - Enter the Twilio Auth Token Obtained.
+
+* TWILIO_PHONE_NUMBER - Enter your Twilio Phone Number , Used for sending OTP.
+
+<br>
+
 ## An Example Of "env" File
 ```
 DJANGO_SECRET_KEY=#sdfgg4g7h%-y8b+34_^s$yo^$a63&*$Fb3^d
 DEBUG=False
-DJANGO_ALLOWED_HOSTS=10.1.1.50
+DJANGO_ALLOWED_HOSTS=vote.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://vote.com
 API_NINJA_API=/ghjf53spoG657vghjygdr0qw==uRVWERV
 TWILIO_ACCOUNT_SID=AA3w5fgdrfawd3459faedw4349a3b
 TWILIO_AUTH_TOKEN=awd18f3ccac7329thfsf43fd4drgx1
 TWILIO_PHONE_NUMBER=+134656544
-DJANGO_CSRF_TRUSTED_ORIGINS=https://10.1.1.50
 ```
+<br>
 
-# Z-vote Deployment On [Raspberrypi Docker Container](https://github.com/akkupy/Homelab)
-
+# Z-vote Deployment On Docker(Step By Step Method) 
+<br><br>
 ## Install Docker and Portainer if not already done.([refer here](https://github.com/akkupy/Homelab#installation-of-docker-and-portainer))
 
+<br><br>
+### 1. Run the following script to clone the repository.
+<br>
 
-### Folder Setup Script
-
-1. First thing we need to do is setup the folder structure. 
-
-Run the following script
 ```
-wget -qO- https://raw.githubusercontent.com/akkupy/Homelab/main/scripts/zvote_dir.sh | sudo bash
+wget -qO- https://raw.githubusercontent.com/akkupy/Z-Vote/production/script/zvote.sh | bash
 ```
-
+<br><br>
 2. Now we need to move into that directory using the following:
 
 ```
-cd /home/$USER/zvote
+cd /home/$USER/Z-Vote
 ```
-3. Create an 'env' file 
+<br><br>
+3. Create an 'env' file .
 
 ```
 sudo nano env
 ```
+<br><br>
 
-4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs))
+4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs)).
 
-5. Pull the docker image of [z-vote](https://hub.docker.com/r/akkupy/z-vote)
+<br><br>
+
+5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and Nginx.
 
 ```
 docker pull akkupy/z-vote:latest
+docker pull nginx:latest
 ```
-6. Run the container
+<br><br>
+
+## Change the ports of Nginx if you are already running a service on port 80 and 443 in the docker-compose.yml file
+
+<br><br>
+
+
+11. Generate a SSL Certificate and copy the .key and .crt files into the directory given below.
 
 ```
-docker run -d \
-  --name=z-vote \
-  -e PUID=1000 \
-  -e PGID=1000 \
-  --env-file env \
-  -p 8100:8100 \
-  -v ./static:/app/static \
-  --restart unless-stopped \
-  akkupy/z-vote:latest
+ cd /home/$USER/Z-Vote/nginx
 ```
+* A self generated SSL certificate(which can be generated [here](https://github.com/akkupy/Self_Signed_SSL_Cerificate))
+* Use Self Generated SSL Certificate For Local and Private VPN Networks.
+<br><br>
 
-7. Exec into the container using the command below
+12. CD into the Z-Vote directory.
 
 ```
-docker exec -it z-vote sh
+cd /home/$USER/Z-Vote
 ```
+<br><br>
+
+13. Run the following command to start the containers.
+
+```
+docker compose up -d
+```
+<br><br>
+
+14. Exec into the container using the command below
+
+```
+docker exec -it zvote sh
+```
+<br><br>
 * You will see a new terminal like shown below.
 
 ```
 /app #
 ```
-
-8. Run the following commands on the container terminal.
+<br><br>
+15. Run the following commands on the container terminal.
 
 * Enter the username and password for the superuser when prompted.
 
@@ -113,87 +157,15 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py collectstatic --noinput
 ```
-9. Press Ctrl+D to exit the container Terminal.
-
-## Install Nginx Proxy Manager if not already done([refer here](https://github.com/akkupy/Homelab/blob/main/docs/nginx_proxy_manager.md)).
-
-### Add a new volume(given below) to the nginx proxy manager container using portainer.
-
-```
-/home/$USER/zvote/static:/data/static
-```
-
-### Setting up Nginx Proxy Manager for Z-vote
-<br>
-
-Go to login screen.
-![First Login](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-First-Login.png)
-
-### Select Hosts > Proxy Hosts
-
-![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-Proxy-Host.png)
-
-Select Add Proxy Hosts
-
-![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-Menu-Add-Proxy-Host.png)
-
-We need to enter the proxy information.  In this example we are going to use the following information.
-
-Secure External connections to the service using https.<br>
-Domain Name: homer.example.com<br>
-Scheme: https<br>
-Forward Hostname/IP address: your-ip<br>
-Port: 8100<br>
-Cache Assets: Disabled<br>
-Block Common Exploits: Enabled<br>
-Websockets Support: Disabled<br>
-Accesss List: Publicly Accessible<br>
-
-> Most of these options should be self explanatory if you aren't sure what they do it is likely best to leave them disabled.
-
-The most import options.<br>  
-Domain Name is the public Domain name that will point at your host.<br>
-Forward Hostname/IP is the server running the resource.<br>
-Port is the port the service is running on that server(In our case its '8100').<br>
+<br><br>
+16. Press Ctrl+D to exit the container Terminal.
 
 
-![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-New-Proxy-Host.png)
+<br><br>
 
-> Hint: Generating Certificates can be complicated I will be outlining one of the simplest ways to generate one.  There are other ways not outlined here.
+### Head Over to your domain name to see the web application!
 
-Now we need to setup our secure https connection to the server.  Select the SSL tab.
 
-## Method 1(Recommended for internet based usage):
-
-Under SSL Certificates we are going to select Request a new SSL Certificate.
-
-I am also going to select Force SSL this will prevent non-secure connections from being used.  
-
-I will agree to the terms after reading them you should at least review them once so you understand the terms of service.
-
-It should have your correct email address listed if it doesn't please fix as this is where you will get alerts if there is an issue with the Certificate.
-
-![Proxy Hosts](https://raw.githubusercontent.com/akkupy/Homelab/main/images/nginx-proxy-manager-New-Proxy-Host-SSL.png)
-
-Once you click Save it will generate a new certificate this can take a few minutes to do.
-
-## Method 2(Recommended for Local usage and usage with [tailscale](https://github.com/akkupy/Homelab/blob/main/docs/tailscale.md)):
-
-You can use a self generated SSL certificate(which can be generated [here](https://github.com/akkupy/Self_Signed_SSL_Cerificate)).In this case select Custom under the SSL Certificates and upload the key and certificate generated.
-
-## Post SSL Certificate Gerneration Go to Advanced Tab
-
-* Paste the Nginx Configuration given below(Change proxy_pass address to the one defined on details page).
-
-```
-location /static/{
-                 root /data;
-        }
-    location / {
-          proxy_pass http://<ip>:8100;
-    }
-
-```
 
 
 <br><br><br><br><br>
