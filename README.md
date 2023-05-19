@@ -101,7 +101,7 @@ sudo nano env
 
 <br><br>
 
-5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and Nginx.
+5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and [Nginx](https://hub.docker.com/_/nginx).
 
 ```
 docker pull akkupy/z-vote:latest
@@ -116,12 +116,20 @@ docker pull nginx:latest
 
 11. Generate a SSL Certificate and copy the .key and .crt files into the directory given below.
 
+<br>
+
 ```
  cd /home/$USER/Z-Vote/nginx
 ```
+
+<br>
+
+* Rename the .key as vote.key and .crt as vote.crt
 * A self generated SSL certificate(which can be generated [here](https://github.com/akkupy/Self_Signed_SSL_Cerificate))
 * Use Self Generated SSL Certificate For Local and Private VPN Networks.
-<br><br>
+
+<br>
+
 
 12. CD into the Z-Vote directory.
 
@@ -184,9 +192,9 @@ $ cd Z-Vote
 # Run Docker Build
 $ docker build -t <name>:<tag> .
 ```
-## * Create env file([refer here](https://github.com/akkupy/Z-Vote/tree/production#mandatory-configs))
+## * Create env file([refer here](https://github.com/akkupy/Z-Vote/tree/production#environment-variables))
 
-## * Run and Configure the container([refer here](https://github.com/akkupy/Z-Vote/tree/production#z-vote-deployment-on-raspberrypi-docker-container))
+## * Run and Configure the container([refer here](https://github.com/akkupy/Z-Vote/tree/production#z-vote-production-deployment-on-docker))
 
 
 
