@@ -74,7 +74,7 @@ def otp(request):
                 fail = 'Password MisMatch!'
         else:
             fail = 'OTP is Invalid'
-        return render(request,'failure.html',{'fail':fail})
+        return render(request,'poll/failure.html/',{'fail':fail})
     return redirect('home')
 
 
