@@ -65,7 +65,9 @@ class Block(models.Model):
     def __str__(self):
         return str(self.self_hash)
 
-class VoteTime(models.Model):
+class VoteAuth(models.Model):
     username = models.CharField(max_length=30,primary_key=True,default='admin')
     start = models.DateTimeField()
     end = models.DateTimeField()
+    resultCalculated = models.BooleanField(default=False)
+    prev_hash = models.CharField(max_length=100, default='0' * 64)
