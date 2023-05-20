@@ -30,4 +30,4 @@ ENV PATH /env/bin:$PATH
 
 EXPOSE 8100
 
-CMD ["gunicorn", "--bind", ":8100", "--workers", "3", "blockchain_voting.wsgi:application"]
+CMD ["gunicorn", "--bind", ":8100", "--workers", "5", "--threads", "5", "blockchain_voting.wsgi:application"]
