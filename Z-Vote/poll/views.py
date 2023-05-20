@@ -224,6 +224,7 @@ def seal(request):
             block = models.Block(id=block_id,prev_hash=prev_hash,self_hash=self_hash,merkle_hash=merkle_hash,nonce=nonce,timestamp=timestamp)
             block.save()
             print('Block {} has been mined'.format(block_id))
+            logout(request)
             return render(request,'poll/votesuccess.html',{'code' : vote_id})
     logout(request)
     return redirect("home")
