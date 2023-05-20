@@ -14,12 +14,11 @@ from pytz import timezone
 from django.contrib.auth.decorators import login_required
 
 
-resultCalculated = False
 
 def home(request):
     error = False
     try:
-        time = get_vote_time()
+        time = get_vote_auth()
         format = "%d/%m/%Y at %H:%M:%S %Z%z"
         asia_start = time[0].start.astimezone(timezone("Asia/Kolkata"))
         asia_end = time[0].end.astimezone(timezone('Asia/Kolkata'))
@@ -111,7 +110,7 @@ def vote(request):
     return render(request, 'poll/vote.html', context)
 
 def signin(request):
-    time = get_vote_time()
+    time = get_vote_auth()
     if time[0].end>datetime.datetime.now(datetime.timezone.utc) and time[0].start<datetime.datetime.now(datetime.timezone.utc):    
         if request.method == 'POST':
             form = AuthenticationForm(request.POST)
@@ -190,7 +189,6 @@ def create(request, pk):
     logout(request)
     return render(request, 'poll/failure.html',{'fail':'It appears you have already voted!'})
 
-prev_hash = '0' * 64
 
 @login_required(login_url='login')
 def seal(request):
@@ -201,7 +199,8 @@ def seal(request):
             logout(request)
             return render(request,'poll/votesuccess.html',{'code' : vote_id})
         else:
-            global prev_hash
+            vote_auth = models.VoteAuth.objects.get(username='admin')
+            prev_hash = vote_auth.prev_hash
             transactions = models.Vote.objects.order_by('block_id').reverse()
             transactions = list(transactions)[:5]
             block_id = transactions[0].block_id
@@ -222,7 +221,8 @@ def seal(request):
                 nonce += 1
             
             block = models.Block(id=block_id,prev_hash=prev_hash,self_hash=self_hash,merkle_hash=merkle_hash,nonce=nonce,timestamp=timestamp)
-            prev_hash = self_hash
+            vote_auth.prev_hash = self_hash
+            vote_auth.save()
             block.save()
             print('Block {} has been mined'.format(block_id))
             return render(request,'poll/votesuccess.html',{'code' : vote_id})
@@ -234,7 +234,7 @@ def retDate(v):
     return v
 
 def verify(request):
-    time = get_vote_time()
+    time = get_vote_auth()
     if time[0].end<datetime.datetime.now(datetime.timezone.utc):
         if request.method == 'GET':
             verification = ''
@@ -282,10 +282,11 @@ def verify(request):
 
 
 def result(request):
-    time = get_vote_time()
+    time = get_vote_auth()
     if time[0].end<datetime.datetime.now(datetime.timezone.utc):
         if request.method == "GET":
-            global resultCalculated
+            vote_auth = models.VoteAuth.objects.get(username='admin')
+            resultCalculated = vote_auth.resultCalculated
             voteVerification = verifyVotes()
             if len(voteVerification):
                     return render(request, 'poll/verification.html', {'verification':"Verification failed.\
@@ -299,7 +300,8 @@ def result(request):
                     candidate.count += 1
                     candidate.save()
                     
-                resultCalculated = True            
+                vote_auth.resultCalculated = True
+                vote_auth.save()            
 
             context = {"candidates":models.Candidate.objects.order_by('count'), "winner":models.Candidate.objects.order_by('count').reverse()[0]}
             return render(request, 'poll/results.html', context)

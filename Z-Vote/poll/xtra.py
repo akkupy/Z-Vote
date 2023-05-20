@@ -9,7 +9,7 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from .models import VoteTime
+from .models import VoteAuth
 
 from twilio.rest import Client
 
@@ -92,7 +92,7 @@ def sms(tonum,data):
                        to=tonum,
                        body=data)
     
-def get_vote_time():
-    datetime = VoteTime.objects.all()
-    return datetime
+def get_vote_auth():
+    vote_auth = VoteAuth.objects.all()
+    return vote_auth
 
