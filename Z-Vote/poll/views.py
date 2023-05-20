@@ -79,6 +79,14 @@ def otp(request):
 
 
 def register(request):
+    time = get_vote_auth()
+    format = "%d/%m/%Y at %H:%M:%S %Z%z"
+    if time[0].end<datetime.datetime.now(datetime.timezone.utc):
+        asia = time[0].end.astimezone(timezone('Asia/Kolkata'))
+        context = {
+            'fail' : "Cannot Register! Voting ended on "+asia.strftime(format),
+        }
+        return render(request,'poll/failure.html',context)
     if request.method=='POST':
         username = request.POST.get('username')
         validVoter = models.VoterList.objects.filter(username=username).exists()
