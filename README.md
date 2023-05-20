@@ -173,9 +173,13 @@ python manage.py collectstatic --noinput
 
 <br><br>
 
-### Head Over to your domain name to see the web application!
+## Head Over to your domain name to see the web application!
 
+* Head over to https://domain_name/admin to add the voterlists in 'Voter lists' table and the candidates in the 'Candidates' table.
 
+* Set the Voting Time in 'Vote auths' table(Create only one object and add the start and end time of voting).
+
+* Now the project is ready for Voting!
 
 
 <br><br><br><br><br>
