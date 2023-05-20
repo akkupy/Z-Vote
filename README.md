@@ -164,8 +164,8 @@ docker exec -it zvote sh
 ```
 python manage.py makemigrations poll
 python manage.py migrate
-python manage.py createsuperuser
 python manage.py collectstatic --noinput
+python manage.py createsuperuser
 ```
 <br><br>
 16. Press Ctrl+D to exit the container Terminal.
