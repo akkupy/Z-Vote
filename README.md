@@ -53,7 +53,7 @@ $ python(3) manage.py runserver 0.0.0.0:80
 
 # Head over to http://127.0.0.1/admin to add the voterlists in 'Voter lists' table and the candidates in the 'Candidates' table.
 
-# Set the Voting Time in 'Vote auths' table(Only one object is needed for voting time).
+# Set the Voting Time in 'Vote auths' table(Create only one object and add the start and end time of voting).
 
 # Now the project is ready for Voting!
 ```
