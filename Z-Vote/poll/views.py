@@ -199,8 +199,6 @@ def seal(request):
             logout(request)
             return render(request,'poll/votesuccess.html',{'code' : vote_id})
         else:
-            vote_auth = models.VoteAuth.objects.get(username='admin')
-            prev_hash = vote_auth.prev_hash
             transactions = models.Vote.objects.order_by('block_id').reverse()
             transactions = list(transactions)[:5]
             block_id = transactions[0].block_id
@@ -214,15 +212,16 @@ def seal(request):
             nonce = 0
             timestamp = datetime.datetime.now().timestamp()
 
+            vote_auth = models.VoteAuth.objects.get(username='admin')
+            prev_hash = vote_auth.prev_hash
             while True:
                 self_hash = sha256('{}{}{}{}'.format(prev_hash, merkle_hash, nonce, timestamp).encode()).hexdigest()
                 if self_hash[0] == '0':
                     break
                 nonce += 1
-            
-            block = models.Block(id=block_id,prev_hash=prev_hash,self_hash=self_hash,merkle_hash=merkle_hash,nonce=nonce,timestamp=timestamp)
             vote_auth.prev_hash = self_hash
             vote_auth.save()
+            block = models.Block(id=block_id,prev_hash=prev_hash,self_hash=self_hash,merkle_hash=merkle_hash,nonce=nonce,timestamp=timestamp)
             block.save()
             print('Block {} has been mined'.format(block_id))
             return render(request,'poll/votesuccess.html',{'code' : vote_id})
@@ -285,24 +284,23 @@ def result(request):
     time = get_vote_auth()
     if time[0].end<datetime.datetime.now(datetime.timezone.utc):
         if request.method == "GET":
-            vote_auth = models.VoteAuth.objects.get(username='admin')
-            resultCalculated = vote_auth.resultCalculated
             voteVerification = verifyVotes()
             if len(voteVerification):
                     return render(request, 'poll/verification.html', {'verification':"Verification failed.\
                     Votes have been tampered in following blocks --> {}. The authority \
                         will resolve the issue".format(voteVerification), 'error':True})
 
+            vote_auth = models.VoteAuth.objects.get(username='admin')
+            resultCalculated = vote_auth.resultCalculated
             if not resultCalculated:
+                vote_auth.resultCalculated = True
+                vote_auth.save() 
                 list_of_votes = models.Vote.objects.all()
                 for vote in list_of_votes:
                     candidate = models.Candidate.objects.filter(candidateID=vote.vote)[0]
                     candidate.count += 1
                     candidate.save()
                     
-                vote_auth.resultCalculated = True
-                vote_auth.save()            
-
             context = {"candidates":models.Candidate.objects.order_by('count'), "winner":models.Candidate.objects.order_by('count').reverse()[0]}
             return render(request, 'poll/results.html', context)
     else:
