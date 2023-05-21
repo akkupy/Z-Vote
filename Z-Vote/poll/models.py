@@ -39,8 +39,8 @@ class Voter(models.Model):
 class VoterPvt(models.Model):
     username = models.CharField(max_length=30,primary_key=True)
     salt = models.CharField(max_length=100)
-    private_key_n = models.CharField(max_length=320)
-    private_key_d = models.CharField(max_length=320)
+    private_key_n = models.CharField(max_length=550)
+    private_key_d = models.CharField(max_length=550)
 
     def __str__(self):
         return self.username
