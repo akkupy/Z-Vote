@@ -142,7 +142,7 @@ sudo nano env
 ```
 <br><br>
 
-4. Fill the environment variables for env file ([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
+4. Fill the environment variables for env file ([see above](https://github.com/akkupy/Z-Vote/tree/production#create-and-fill-the-env-file-with-the-obtained-apis)).
 
 <br><br>
 
@@ -153,7 +153,7 @@ sudo nano envdb
 ```
 <br><br>
 
-4. Fill the environment variables for envdb file ([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
+4. Fill the environment variables for envdb file ([see above](https://github.com/akkupy/Z-Vote/tree/production#create-envdb-file-in-the-same-directory-of-env-file-and-fill-the-below-values)).
 
 <br><br>
 
