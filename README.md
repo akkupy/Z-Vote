@@ -129,12 +129,14 @@ MYSQL_ROOT_PASSWORD=sreeku
 wget -qO- https://raw.githubusercontent.com/akkupy/Z-Vote/production/script/zvote.sh | bash
 ```
 <br><br>
+
 2. Now we need to move into that directory using the following:
 
 ```
 cd /home/$USER/Z-Vote
 ```
 <br><br>
+
 3. Create an 'env' file .
 
 ```
@@ -146,18 +148,18 @@ sudo nano env
 
 <br><br>
 
-3. Create an 'envdb' file .
+5. Create an 'envdb' file .
 
 ```
 sudo nano envdb
 ```
 <br><br>
 
-4. Fill the environment variables for envdb file ([see above](https://github.com/akkupy/Z-Vote/tree/production#create-envdb-file-in-the-same-directory-of-env-file-and-fill-the-below-values)).
+6. Fill the environment variables for envdb file ([see above](https://github.com/akkupy/Z-Vote/tree/production#create-envdb-file-in-the-same-directory-of-env-file-and-fill-the-below-values)).
 
 <br><br>
 
-5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and [Nginx](https://hub.docker.com/_/nginx) and [Mysql](https://hub.docker.com/_/mysql).
+7. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and [Nginx](https://hub.docker.com/_/nginx) and [Mysql](https://hub.docker.com/_/mysql).
 
 ```
 docker pull akkupy/z-vote:latest
@@ -171,7 +173,7 @@ docker pull mysql:latest
 <br><br>
 
 
-11. Generate a SSL Certificate and copy the .key and .crt files into the directory given below.
+8. Generate a SSL Certificate and copy the .key and .crt files into the directory given below.
 
 <br>
 
@@ -188,14 +190,14 @@ docker pull mysql:latest
 <br>
 
 
-12. CD into the Z-Vote directory.
+9. CD into the Z-Vote directory.
 
 ```
 cd /home/$USER/Z-Vote
 ```
 <br><br>
 
-13. Run the following command to start the containers.
+10. Run the following command to start the containers.
 
 ```
 docker compose up -d
@@ -205,7 +207,7 @@ docker compose up -d
 * WAIT FOR THE DATABASE TO BOOT UP(>1min)
 <br><br>
 
-14. Exec into the container using the command below
+11. Exec into the container using the command below
 
 ```
 docker exec -it zvote sh
@@ -217,7 +219,8 @@ docker exec -it zvote sh
 /app #
 ```
 <br><br>
-15. Run the following commands on the container terminal.
+
+12. Run the following commands on the container terminal.
 
 * Enter the username and password for the superuser when prompted.
 
@@ -228,7 +231,8 @@ python manage.py collectstatic --noinput
 python manage.py createsuperuser
 ```
 <br><br>
-16. Press Ctrl+D to exit the container Terminal.
+
+13. Press Ctrl+D to exit the container Terminal.
 
 
 <br><br>
