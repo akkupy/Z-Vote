@@ -6,6 +6,7 @@ RUN apk update && apk upgrade
 RUN apk add --no-cache bash\
                        libffi-dev \
                        musl-dev \
+                       mariadb-dev \
                        git \
                        gcc \
     && rm -rf /var/cache/apk/*
