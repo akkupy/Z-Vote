@@ -12,7 +12,7 @@
 1. Python 3.11.x
 2. Django Web Framework 4.2.1
 3. Bootstrap 4
-4. DB SQLite 3
+4. MySQL
 5. HTML5
 
 
@@ -21,18 +21,24 @@
 1. Go to [API NINJA](https://api-ninjas.com/) and signup to obtain the api key for passphrase generation.
 2. Create an Account on [TWILIO](https://www.twilio.com/try-twilio) and Buy a Phone Number to use the OTP Service.
 
-Fill the env file with the obtained APIs.
+### Create and fill the 'env' file with the obtained APIs.
+
+<br>
 
 ```
-[+] Create a env file in the root directory
+[+] Create a 'env' file in the root directory
     [-] DJANGO_SECRET_KEY=
     [-] DEBUG=
     [-] DJANGO_ALLOWED_HOSTS=
     [-] DJANGO_CSRF_TRUSTED_ORIGINS=
-    [-] API_NINJA_API =
-    [-] TWILIO_ACCOUNT_SID =
-    [-] TWILIO_AUTH_TOKEN = 
-    [-] TWILIO_PHONE_NUMBER = 
+    [-] API_NINJA_API=
+    [-] TWILIO_ACCOUNT_SID=
+    [-] TWILIO_AUTH_TOKEN= 
+    [-] TWILIO_PHONE_NUMBER= 
+    [-] MYSQL_DATABASE=
+    [-] MYSQL_USER=
+    [-] MYSQL_PASSWORD=
+    [-] MYSQL_ROOT_PASSWORD=
 ```
 <br>
 
@@ -55,6 +61,16 @@ Fill the env file with the obtained APIs.
 
 * <b>TWILIO_PHONE_NUMBER</b> - Enter your Twilio Phone Number , Used for sending OTP.
 
+* <b>MYSQL_DATABASE</b> - Enter the MYSQL Database Name.
+
+* <b>MYSQL_USER</b> - Enter the MYSQL Username.
+
+* <b>MYSQL_PASSWORD</b> - Enter the MYSQL Password.
+
+* <b>MYSQL_ROOT_PASSWORD</b> - Enter the MYSQL Root Password.
+
+
+
 <br>
 
 ## An Example Of "env" File
@@ -67,6 +83,35 @@ API_NINJA_API=/ghjf53spoG657vghjygdr0qw==uRVWERV
 TWILIO_ACCOUNT_SID=AA3w5fgdrfawd3459faedw4349a3b
 TWILIO_AUTH_TOKEN=awd18f3ccac7329thfsf43fd4drgx1
 TWILIO_PHONE_NUMBER=+134656544
+MYSQL_DATABASE=zvote_db
+MYSQL_USER=akkupy
+MYSQL_PASSWORD=sreeku
+MYSQL_ROOT_PASSWORD=sreeku
+```
+<br>
+
+### Create 'envdb' file in the same directory of env file and fill the below values.
+
+<br>
+
+  * USE THE SAME VALUES USED IN THE 'env' FILE.
+
+```
+[+] Create a 'envdb' file in the root directory
+    [-] MYSQL_DATABASE=
+    [-] MYSQL_USER=
+    [-] MYSQL_PASSWORD=
+    [-] MYSQL_ROOT_PASSWORD=
+```
+
+<br>
+
+## An Example Of "envdb" File
+```
+MYSQL_DATABASE=zvote_db
+MYSQL_USER=akkupy
+MYSQL_PASSWORD=sreeku
+MYSQL_ROOT_PASSWORD=sreeku
 ```
 <br>
 
@@ -97,15 +142,27 @@ sudo nano env
 ```
 <br><br>
 
-4. Fill the environment variables([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
+4. Fill the environment variables for env file ([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
 
 <br><br>
 
-5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and [Nginx](https://hub.docker.com/_/nginx).
+3. Create an 'envdb' file .
+
+```
+sudo nano envdb
+```
+<br><br>
+
+4. Fill the environment variables for envdb file ([see above](https://github.com/akkupy/Z-Vote/tree/production#environment-variables)).
+
+<br><br>
+
+5. Pull the docker image of [Z-Vote](https://hub.docker.com/r/akkupy/z-vote) and [Nginx](https://hub.docker.com/_/nginx) and [Mysql](https://hub.docker.com/_/mysql).
 
 ```
 docker pull akkupy/z-vote:latest
 docker pull nginx:latest
+docker pull mysql:latest
 ```
 <br><br>
 
@@ -143,6 +200,9 @@ cd /home/$USER/Z-Vote
 ```
 docker compose up -d
 ```
+<br>
+
+* WAIT FOR THE DATABASE TO BOOT UP(>1min)
 <br><br>
 
 14. Exec into the container using the command below
