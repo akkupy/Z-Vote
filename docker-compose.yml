@@ -16,6 +16,9 @@ services:
       - static_volume:/app/static
     networks:
       - nginx_network
+      - zvotedb_network
+    depends_on:
+      - zvotedb
     restart: unless-stopped
   nginx:
     image: nginx:latest
@@ -37,11 +40,23 @@ services:
     networks:
       - nginx_network
     restart: unless-stopped
+  zvotedb:
+    image: mysql:latest
+    env_file:
+      - envdb
+    networks:
+      - zvotedb_network
+    volumes:
+      - zvotedb_volume:/var/lib/mysql
+    restart: unless-stopped
 
 
 networks:
   nginx_network:
     driver: bridge
+  zvotedb_network:
+    driver: bridge
 
 volumes:
-  static_volume:  
+  static_volume: 
+  zvotedb_volume: 
